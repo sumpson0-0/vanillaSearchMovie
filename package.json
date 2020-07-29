@@ -1,0 +1,32 @@
+{
+	"name": "vanillaSearchMovie",
+	"version": "1.0.0",
+	"description": "search movie with vanilla javascript",
+	"main": ".eslintrc.js",
+	"dependencies": {
+		"eslint-config-prettier": "^6.11.0",
+		"eslint": "^7.5.0",
+		"eslint-plugin-import": "^2.22.0",
+		"eslint-config-airbnb-base": "^14.2.0"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.10.5",
+		"@babel/core": "^7.10.5",
+		"@babel/preset-env": "^7.10.4"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "babel assets/js -w -d dist/js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sumpson0-0/vanillaSearchMovie.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/sumpson0-0/vanillaSearchMovie/issues"
+	},
+	"homepage": "https://github.com/sumpson0-0/vanillaSearchMovie#readme"
+}
