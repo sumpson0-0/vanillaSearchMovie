@@ -1,7 +1,5 @@
 @import 'reset.css';
 
-/* font-family: 'Do Hyeon', sans-serif; */
-
 * {
 	font-family: 'Barlow', sans-serif;
 	box-sizing: border-box;
@@ -13,7 +11,7 @@ body {
 	justify-content: center;
 	height: 100vh;
 	padding: 3rem;
-	background-color: rgb(224, 224, 224);
+	background-color: rgb(230, 230, 230);
 }
 
 .main {
@@ -37,6 +35,7 @@ body {
 .search-container .search .search-bar {
 	display: flex;
 	align-items: center;
+	width: 100%;
 }
 
 .search-container .search .search-bar .search-bar__i {
@@ -48,7 +47,7 @@ body {
 	width: 100%;
 	height: 2.5rem;
 	margin-left: 15px;
-	font-size: 2rem;
+	font-size: 1.7rem;
 	border: none;
 }
 
@@ -57,7 +56,7 @@ body {
 }
 
 .search-bar .search-bar__input::placeholder {
-	font-size: 1.5rem;
+	font-size: 1.7rem;
 	font-weight: bold;
 	color: rgb(224, 224, 224);
 	line-height: 3rem;
