@@ -1,10 +1,29 @@
 const form = document.querySelector('.search-area__form');
 const input = document.querySelector('.search-area__input');
 const recentContainer = document.querySelector('.recent-items');
+const recentItem = document.getElementsByClassName('recent-item');
+const searchBoundary = document.querySelector('.search-boundary');
+const info = document.querySelector('.search-info');
 
 let recentSearchTerms = [];
 let searchId = 0;
 
+/*
+const getMovies = title => {
+	fetch(`http://www.omdbapi.com/?s=${title}&apikey=432c5b0f`, {
+		Title: 'man',
+	})
+		.then(response => {
+			if (response && response.ok) {
+				return response.json();
+			}
+		})
+		.then(json => {
+			console.log(json);
+		});
+	console.log(localStorage.getItem('movie'));
+};
+*/
 const handleSubmit = () => {
 	event.preventDefault();
 	const inputText = input.value;
@@ -12,6 +31,7 @@ const handleSubmit = () => {
 	if (inputText.length > 0) {
 		saveRecentSearch(inputText);
 	}
+	input.blur();
 
 	// getMovies(inputText);
 };
@@ -40,33 +60,27 @@ const paintRecentSearch = movie => {
 	div.appendChild(btn);
 	recentContainer.appendChild(div);
 	saveRecentSearch(movie.text);
-	input.removeEventListener('focus', handleFocus);
 };
 
 const handleFocus = () => {
 	const loadRecentSearch = JSON.parse(localStorage.getItem('movie'));
 	if (loadRecentSearch !== null) {
+		searchBoundary.classList.add('show');
+		info.classList.add('show');
+		recentSearchTerms = [];
 		loadRecentSearch.forEach(movie => paintRecentSearch(movie));
 	}
 };
 
 const handleFocusOut = () => {
-	console.log('bye');
+	searchBoundary.classList.remove('show');
+	info.classList.remove('show');
+	recentContainer.childNodes.forEach(item => {
+		recentContainer.removeChild(item);
+	});
+	// 최근검색어만 제대로 사라지게 만들면 포커스 다시 됐을 때 중첩 안 됨.
 };
 
 input.addEventListener('focus', handleFocus);
 input.addEventListener('focusout', handleFocusOut);
 form.addEventListener('submit', handleSubmit);
-
-// response false인 경우 error가 alert나 이런거로 화면에 뜨게하자
-// 한번 input 클릭해서 불러와진 경우 또 눌렀을 때 밑에 중복되서 추가로 불러와짐. 이거 해결하자
-// 검색 선하고 recent searches는 display none에서 클릭하면 나오게 하는걸로
-// recent searches 나올 때 부드럽게 나오게하기
-
-// 보던 링크
-// localStorage MDN : https://developer.mozilla.org/ko/docs/Web/API/Window/localStorage
-
-// 1. focus하면 이전 기록나오고
-// 2. submit하면 focus 사라지고 -> 어케?
-// 3. focusout되면 이벤트발생해서최근 기록이 보여지는 부분도 사라져야 함
-// -> submit하면 focus자동으로 사라지니 실행되고, 이용자가 직접 input 외의 부분을 클릭해서 focus가 사라져도 실행 됨
