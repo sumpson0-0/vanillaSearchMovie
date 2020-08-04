@@ -63,11 +63,23 @@ const paintRecentSearch = movie => {
 
 const handleFocus = () => {
 	const loadRecentSearch = JSON.parse(localStorage.getItem('movie'));
-
+	if (loadRecentSearch === null) {
+		console.log('없음');
+	}
 	if (loadRecentSearch !== null) {
-		searchBoundary.classList.add('show');
-		info.classList.add('show');
-		loadRecentSearch.forEach(movie => paintRecentSearch(movie));
+		console.log('있음');
+		if (loadRecentSearch.length > 5) {
+			console.log('있고 5넘음');
+			const newRecentSearch = loadRecentSearch.filter(movie => movie.id !== 1);
+			searchBoundary.classList.add('show');
+			info.classList.add('show');
+			newRecentSearch.forEach(movie => paintRecentSearch(movie));
+		} else {
+			console.log('있는데 5안넘음');
+			searchBoundary.classList.add('show');
+			info.classList.add('show');
+			loadRecentSearch.forEach(movie => paintRecentSearch(movie));
+		}
 	}
 };
 
