@@ -1,7 +1,6 @@
 const form = document.querySelector('.search-area__form');
 const input = document.querySelector('.search-area__input');
 const recentContainer = document.querySelector('.recent-items');
-const recentItem = document.getElementsByClassName('recent-item');
 const searchBoundary = document.querySelector('.search-boundary');
 const info = document.querySelector('.search-info');
 
@@ -64,10 +63,10 @@ const paintRecentSearch = movie => {
 
 const handleFocus = () => {
 	const loadRecentSearch = JSON.parse(localStorage.getItem('movie'));
+
 	if (loadRecentSearch !== null) {
 		searchBoundary.classList.add('show');
 		info.classList.add('show');
-		recentSearchTerms = [];
 		loadRecentSearch.forEach(movie => paintRecentSearch(movie));
 	}
 };
@@ -75,12 +74,21 @@ const handleFocus = () => {
 const handleFocusOut = () => {
 	searchBoundary.classList.remove('show');
 	info.classList.remove('show');
-	recentContainer.childNodes.forEach(item => {
-		recentContainer.removeChild(item);
-	});
-	// 최근검색어만 제대로 사라지게 만들면 포커스 다시 됐을 때 중첩 안 됨.
+	recentSearchTerms = [];
+	recentContainer.innerHTML = '';
 };
 
 input.addEventListener('focus', handleFocus);
 input.addEventListener('focusout', handleFocusOut);
 form.addEventListener('submit', handleSubmit);
+
+// response false인 경우 error가 alert나 이런거로 화면에 뜨게하자
+// recent searches 나올 때 부드럽게 나오게하기
+
+// 로컬스토리지를 삭제할필요가 없다.왜냐면 loadRecentSearch에 중첩안되고 잘 쌓여만 있으면
+// setItem 할 때 movie자체가  loadRecentSearch 내용으로 덮어씌워지기 때문.
+// loadRecentSearch에 중첩안되게 만드는 거에 중점을 둬야 한다.
+// 그리고 중첩이 되지 않게 하려면, 페인트부분이 겹치지만 않으면 됨. 페인트된 최근 검색어가 다시 save 되는 구조라서.
+
+// 로컬말고 loadRecentSearch를 비워야겠는데? 중첩 안되게..?
+// 로컬스토리지, 페인트에 중첩이 문제가 아니라 애초에 loadRecentSearch가 문제엿네..뒤에서 쌓이고 있었ㅇㅁ..대박
