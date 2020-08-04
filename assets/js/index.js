@@ -1,8 +1,11 @@
+const body = document.querySelector('body');
+
 const form = document.querySelector('.search-area__form');
 const input = document.querySelector('.search-area__input');
 const recentContainer = document.querySelector('.recent-items');
 const searchBoundary = document.querySelector('.search-boundary');
 const info = document.querySelector('.search-info');
+const btn = document.querySelector('.item__btn');
 
 let recentSearchTerms = [];
 let searchId = 0;
@@ -29,11 +32,13 @@ const handleSubmit = () => {
 	input.value = '';
 	if (inputText.length > 0) {
 		saveRecentSearch(inputText);
+		input.blur();
+		removeRecentItems();
 	}
-	input.blur();
-
 	// getMovies(inputText);
 };
+
+const saveStorage = () => localStorage.setItem('movie', JSON.stringify(recentSearchTerms));
 
 const saveRecentSearch = title => {
 	searchId = recentSearchTerms.length + 1;
@@ -42,7 +47,7 @@ const saveRecentSearch = title => {
 		text: title,
 	};
 	recentSearchTerms.push(searchWord);
-	localStorage.setItem('movie', JSON.stringify(recentSearchTerms));
+	saveStorage();
 };
 
 const paintRecentSearch = movie => {
@@ -50,7 +55,11 @@ const paintRecentSearch = movie => {
 	div.id = movie.id;
 	div.className = 'recent-item';
 	const text = document.createElement('p');
-	text.innerText = movie.text;
+	if (movie.text.length > 12) {
+		text.innerText = movie.text.substr(0, 12) + '...';
+	} else {
+		text.innerText = movie.text;
+	}
 	text.className = 'item__text';
 	const btn = document.createElement('button');
 	btn.innerText = 'Select ✖';
@@ -68,6 +77,7 @@ const handleFocus = () => {
 	}
 	if (loadRecentSearch !== null) {
 		console.log('있음');
+		input.removeEventListener('focus', handleFocus);
 		if (loadRecentSearch.length > 5) {
 			console.log('있고 5넘음');
 			const newRecentSearch = loadRecentSearch.filter(movie => movie.id !== 1);
@@ -83,16 +93,70 @@ const handleFocus = () => {
 	}
 };
 
-const handleFocusOut = () => {
+const removeRecentItems = () => {
 	searchBoundary.classList.remove('show');
 	info.classList.remove('show');
 	recentSearchTerms = [];
 	recentContainer.innerHTML = '';
+	input.addEventListener('focus', handleFocus);
+};
+
+const handleBtnClick = event => {
+	console.log(event.target, event.currentTarget);
+};
+
+const handleBodyClick = event => {
+	const target = event.target;
+	if (target == event.currentTarget.querySelector('.search')) {
+		console.log('search 내부임');
+		return;
+	} else if (target == event.currentTarget.querySelector('.search-area')) {
+		console.log('search 내부임');
+		return;
+	} else if (target == event.currentTarget.querySelector('.fa-search')) {
+		console.log('search 내부임');
+		return;
+	} else if (target == event.currentTarget.querySelector('.search-area__i')) {
+		console.log('search 내부임');
+		return;
+	} else if (target == event.currentTarget.querySelector('.search-area__form')) {
+		console.log('search 내부임');
+		return;
+	} else if (target == event.currentTarget.querySelector('.search-area__input')) {
+		console.log('search 내부임');
+		return;
+	} else if (target == event.currentTarget.querySelector('.search-boundary')) {
+		console.log('search 내부임');
+		return;
+	} else if (target == event.currentTarget.querySelector('.search-info')) {
+		console.log('search 내부임');
+		return;
+	} else if (target == event.currentTarget.querySelector('.recent-items')) {
+		console.log('search 내부임');
+		return;
+	} else if (target.className == 'recent-item') {
+		console.log('search 내부임');
+		return;
+	} else if (target.className == 'item__text') {
+		console.log('search 내부임');
+		return;
+	} else if (target.className == 'item__btn') {
+		console.log('search 내부임');
+		const selectedItem = target.parentNode;
+		recentContainer.removeChild(selectedItem);
+		const removeRecentSearch = recentSearchTerms.filter(item => parseInt(selectedItem.id) !== item.id);
+		recentSearchTerms = removeRecentSearch;
+		saveStorage();
+		return;
+	} else {
+		console.log('search 외부임');
+		removeRecentItems();
+	}
 };
 
 input.addEventListener('focus', handleFocus);
-input.addEventListener('focusout', handleFocusOut);
 form.addEventListener('submit', handleSubmit);
+body.addEventListener('click', handleBodyClick);
 
 // response false인 경우 error가 alert나 이런거로 화면에 뜨게하자
 // recent searches 나올 때 부드럽게 나오게하기
