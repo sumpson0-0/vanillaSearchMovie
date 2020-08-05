@@ -70,14 +70,15 @@ body {
 	border-top: rgb(230, 230, 230) solid 2px;
 }
 
-/* ********************recent-items******************* */
-.search-container .search .recent-items {
-}
+/* ********************search-info******************* */
 
-.search .recent-items .info {
+.search-container .search .search-info {
 	display: none;
 	padding-bottom: 0.3rem;
 	color: rgb(180, 180, 180);
+}
+/* ********************recent-items******************* */
+.search-container .search .recent-items {
 }
 
 .search .recent-items .recent-item {
@@ -88,13 +89,15 @@ body {
 }
 
 .recent-item .item__text {
+	width: 70%;
 	font-size: 1.3rem;
 }
 
 .recent-item .item__btn {
-	border: none;
+	border: solid 1px rgb(146, 146, 146);
+	border-radius: 5px;
 	background-color: white;
-	color: rgb(230, 230, 230);
+	color: rgb(189, 189, 189);
 	outline: none;
 }
 
