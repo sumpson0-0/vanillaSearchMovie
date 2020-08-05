@@ -26,6 +26,15 @@ const getMovies = title => {
 	console.log(localStorage.getItem('movie'));
 };
 */
+
+const removeRecentItems = () => {
+	searchBoundary.classList.remove('show');
+	info.classList.remove('show');
+	recentSearchTerms = [];
+	recentContainer.innerHTML = '';
+	input.addEventListener('focus', handleFocus);
+};
+
 const handleSubmit = () => {
 	event.preventDefault();
 	const inputText = input.value;
@@ -75,7 +84,7 @@ const handleFocus = () => {
 	if (loadRecentSearch === null) {
 		console.log('없음');
 	}
-	if (loadRecentSearch !== null) {
+	if (Array.isArray(loadRecentSearch) && loadRecentSearch.length > 0) {
 		console.log('있음');
 		input.removeEventListener('focus', handleFocus);
 		if (loadRecentSearch.length > 5) {
@@ -91,14 +100,6 @@ const handleFocus = () => {
 			loadRecentSearch.forEach(movie => paintRecentSearch(movie));
 		}
 	}
-};
-
-const removeRecentItems = () => {
-	searchBoundary.classList.remove('show');
-	info.classList.remove('show');
-	recentSearchTerms = [];
-	recentContainer.innerHTML = '';
-	input.addEventListener('focus', handleFocus);
 };
 
 const handleBtnClick = event => {
@@ -144,7 +145,7 @@ const handleBodyClick = event => {
 		console.log('search 내부임');
 		const selectedItem = target.parentNode;
 		recentContainer.removeChild(selectedItem);
-		const removeRecentSearch = recentSearchTerms.filter(item => parseInt(selectedItem.id) !== item.id);
+		const removeRecentSearch = recentSearchTerms.filter(item => parseInt(selectedItem.id) - 1 !== item.id);
 		recentSearchTerms = removeRecentSearch;
 		saveStorage();
 		return;
