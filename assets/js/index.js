@@ -61,7 +61,7 @@ const saveRecentSearch = title => {
 
 const paintRecentSearch = movie => {
 	const div = document.createElement('div');
-	div.id = movie.id;
+	div.id = recentSearchTerms.length + 1;
 	div.className = 'recent-item';
 	const text = document.createElement('p');
 	if (movie.text.length > 12) {
@@ -145,7 +145,7 @@ const handleBodyClick = event => {
 		console.log('search 내부임');
 		const selectedItem = target.parentNode;
 		recentContainer.removeChild(selectedItem);
-		const removeRecentSearch = recentSearchTerms.filter(item => parseInt(selectedItem.id) - 1 !== item.id);
+		const removeRecentSearch = recentSearchTerms.filter(item => parseInt(selectedItem.id) !== item.id);
 		recentSearchTerms = removeRecentSearch;
 		saveStorage();
 		return;
