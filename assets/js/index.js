@@ -4,7 +4,7 @@ const form = document.querySelector('.search-area__form');
 const input = document.querySelector('.search-area__input');
 const recentContainer = document.querySelector('.recent-items');
 const searchBoundary = document.querySelector('.search-boundary');
-const info = document.querySelector('.search-info');
+const searchInfo = document.querySelector('.search-info');
 const btn = document.querySelector('.item__btn');
 
 const resultContainer = document.querySelector('.results-container');
@@ -50,7 +50,7 @@ const handleSubmit = () => {
 
 const removeRecentItems = () => {
 	searchBoundary.classList.remove('show');
-	info.classList.remove('show');
+	searchInfo.classList.remove('show');
 	recentSearchTerms = [];
 	recentContainer.innerHTML = '';
 	input.addEventListener('focus', handleFocus);
@@ -100,12 +100,12 @@ const handleFocus = () => {
 			console.log('있고 5넘음');
 			const newRecentSearch = loadRecentSearch.filter(movie => movie.id !== 1);
 			searchBoundary.classList.add('show');
-			info.classList.add('show');
+			searchInfo.classList.add('show');
 			newRecentSearch.forEach(movie => paintRecentSearch(movie));
 		} else {
 			console.log('있는데 5안넘음');
 			searchBoundary.classList.add('show');
-			info.classList.add('show');
+			searchInfo.classList.add('show');
 			loadRecentSearch.forEach(movie => paintRecentSearch(movie));
 		}
 	}
