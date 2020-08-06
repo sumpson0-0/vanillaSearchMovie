@@ -7,10 +7,13 @@ const searchBoundary = document.querySelector('.search-boundary');
 const info = document.querySelector('.search-info');
 const btn = document.querySelector('.item__btn');
 
+const resultContainer = document.querySelector('.results-container');
+
 let recentSearchTerms = [];
 let searchId = 0;
 
-/*
+const paintMovie = movie => {};
+
 const getMovies = title => {
 	fetch(`http://www.omdbapi.com/?s=${title}&apikey=432c5b0f`, {
 		Title: 'man',
@@ -21,18 +24,16 @@ const getMovies = title => {
 			}
 		})
 		.then(json => {
-			console.log(json);
+			if (json.Response === 'True') {
+				console.log('영화 가져오기 성공');
+				const movies = json.Search;
+				console.log(movies);
+				movies.forEach(movie => paintMovie(movie));
+			} else if (json.Response === 'False') {
+				console.log('영화 가져오기 실패');
+				alert(json.Error);
+			}
 		});
-	console.log(localStorage.getItem('movie'));
-};
-*/
-
-const removeRecentItems = () => {
-	searchBoundary.classList.remove('show');
-	info.classList.remove('show');
-	recentSearchTerms = [];
-	recentContainer.innerHTML = '';
-	input.addEventListener('focus', handleFocus);
 };
 
 const handleSubmit = () => {
@@ -44,7 +45,15 @@ const handleSubmit = () => {
 		input.blur();
 		removeRecentItems();
 	}
-	// getMovies(inputText);
+	getMovies(inputText);
+};
+
+const removeRecentItems = () => {
+	searchBoundary.classList.remove('show');
+	info.classList.remove('show');
+	recentSearchTerms = [];
+	recentContainer.innerHTML = '';
+	input.addEventListener('focus', handleFocus);
 };
 
 const saveStorage = () => localStorage.setItem('movie', JSON.stringify(recentSearchTerms));
@@ -159,13 +168,7 @@ input.addEventListener('focus', handleFocus);
 form.addEventListener('submit', handleSubmit);
 body.addEventListener('click', handleBodyClick);
 
-// response false인 경우 error가 alert나 이런거로 화면에 뜨게하자
+// 구현할 것
+// 최근 검색어 클릭시 input에 값 전달되는 기능
+// 최근 검색어 hover시 배경 회색
 // recent searches 나올 때 부드럽게 나오게하기
-
-// 로컬스토리지를 삭제할필요가 없다.왜냐면 loadRecentSearch에 중첩안되고 잘 쌓여만 있으면
-// setItem 할 때 movie자체가  loadRecentSearch 내용으로 덮어씌워지기 때문.
-// loadRecentSearch에 중첩안되게 만드는 거에 중점을 둬야 한다.
-// 그리고 중첩이 되지 않게 하려면, 페인트부분이 겹치지만 않으면 됨. 페인트된 최근 검색어가 다시 save 되는 구조라서.
-
-// 로컬말고 loadRecentSearch를 비워야겠는데? 중첩 안되게..?
-// 로컬스토리지, 페인트에 중첩이 문제가 아니라 애초에 loadRecentSearch가 문제엿네..뒤에서 쌓이고 있었ㅇㅁ..대박
