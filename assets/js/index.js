@@ -7,12 +7,32 @@ const searchBoundary = document.querySelector('.search-boundary');
 const searchInfo = document.querySelector('.search-info');
 const btn = document.querySelector('.item__btn');
 
-const resultContainer = document.querySelector('.results-container');
+const resultContainer = document.querySelector('.results');
 
 let recentSearchTerms = [];
 let searchId = 0;
 
-const paintMovie = movie => {};
+const paintMovie = movie => {
+	const resultItem = document.createElement('article');
+	resultItem.className = 'result';
+	const poster = document.createElement('div');
+	poster.className = 'result__poster';
+	poster.style.backgroundImage = `url('${movie.Poster}')`;
+	const movieInfo = document.createElement('div');
+	movieInfo.className = 'result__info';
+	const title = document.createElement('h1');
+	title.className = 'result__title';
+	title.innerText = movie.Title;
+	const year = document.createElement('p');
+	year.className = 'result__year';
+	year.innerText = movie.Year;
+
+	movieInfo.appendChild(title);
+	movieInfo.appendChild(year);
+	resultItem.appendChild(poster);
+	resultItem.appendChild(movieInfo);
+	resultContainer.appendChild(resultItem);
+};
 
 const getMovies = title => {
 	fetch(`http://www.omdbapi.com/?s=${title}&apikey=432c5b0f`, {
@@ -172,3 +192,7 @@ body.addEventListener('click', handleBodyClick);
 // 최근 검색어 클릭시 input에 값 전달되는 기능
 // 최근 검색어 hover시 배경 회색
 // recent searches 나올 때 부드럽게 나오게하기
+// 새로고침시 영화 리스트 사라지고 초기 화면으로 이동
+// 각 데이터 있는지 검증
+// 데이터 받기 전에는 reaultContainer 디스플레이 없어야하고
+// 다른거 검색하면 이전 데이터 나왔던 것 지워지고 새걸로 씌워져야 해
