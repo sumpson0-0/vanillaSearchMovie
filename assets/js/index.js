@@ -47,7 +47,6 @@ const handleScroll = () => {
 			currentPage = currentPage + 1;
 			getMovies();
 		}
-		console.log('현재페이지', currentPage);
 	}
 };
 
@@ -63,13 +62,10 @@ const getMovies = () => {
 				const movies = json.Search;
 				const totalResults = json.totalResults;
 				lastPage = Math.round(totalResults / 10);
-				console.log('영화 가져오기 성공');
-				console.log('영화 총 갯수', totalResults, '마지막 페이지', lastPage);
 				resultContainer.style.display = 'flex';
 				movies.forEach(movie => paintMovie(movie));
 				window.addEventListener('scroll', handleScroll);
 			} else if (json.Response === 'False') {
-				console.log('영화 가져오기 실패');
 				alert(json.Error);
 				return;
 			}
@@ -89,14 +85,6 @@ const handleSubmit = () => {
 		currentPage = 1;
 		getMovies();
 	}
-};
-
-const removeRecentItems = () => {
-	searchBoundary.classList.remove('show');
-	searchInfo.classList.remove('show');
-	recentSearchTerms = [];
-	recentContainer.innerHTML = '';
-	input.addEventListener('focus', handleFocus);
 };
 
 const saveStorage = () => localStorage.setItem('movie', JSON.stringify(recentSearchTerms));
@@ -131,16 +119,13 @@ const handleFocus = () => {
 	const loadRecentSearch = JSON.parse(localStorage.getItem('movie'));
 
 	if (Array.isArray(loadRecentSearch) && loadRecentSearch.length > 0) {
-		console.log('있음');
 		input.removeEventListener('focus', handleFocus);
 		if (loadRecentSearch.length > 5) {
-			console.log('있고 5넘음');
 			const newRecentSearch = loadRecentSearch.filter(movie => movie.id !== 1);
 			searchBoundary.classList.add('show');
 			searchInfo.classList.add('show');
 			newRecentSearch.forEach(movie => paintRecentSearch(movie));
 		} else {
-			console.log('있는데 5안넘음');
 			searchBoundary.classList.add('show');
 			searchInfo.classList.add('show');
 			loadRecentSearch.forEach(movie => paintRecentSearch(movie));
@@ -148,49 +133,45 @@ const handleFocus = () => {
 	}
 };
 
+const removeRecentItems = () => {
+	searchBoundary.classList.remove('show');
+	searchInfo.classList.remove('show');
+	recentSearchTerms = [];
+	recentContainer.innerHTML = '';
+	input.addEventListener('focus', handleFocus);
+};
+
 const handleBodyClick = event => {
 	const target = event.target;
 	if (target == event.currentTarget.querySelector('.search')) {
-		console.log('search 내부임');
 		return;
 	} else if (target == event.currentTarget.querySelector('.search-area')) {
-		console.log('search 내부임');
 		return;
 	} else if (target == event.currentTarget.querySelector('.fa-search')) {
-		console.log('search 내부임');
 		return;
 	} else if (target == event.currentTarget.querySelector('.search-area__i')) {
-		console.log('search 내부임');
 		return;
 	} else if (target == event.currentTarget.querySelector('.search-area__form')) {
-		console.log('search 내부임');
 		return;
 	} else if (target == event.currentTarget.querySelector('.search-area__input')) {
-		console.log('search 내부임');
 		return;
 	} else if (target == event.currentTarget.querySelector('.search-boundary')) {
-		console.log('search 내부임');
 		return;
 	} else if (target == event.currentTarget.querySelector('.search-info')) {
-		console.log('search 내부임');
 		return;
 	} else if (target == event.currentTarget.querySelector('.recent-items')) {
-		console.log('search 내부임');
 		return;
 	} else if (target.className == 'recent-item') {
-		console.log('search 내부임');
 		const selectedText = target.firstChild.innerText;
 		input.value = selectedText;
 		handleSubmit();
 		return;
 	} else if (target.className == 'item__text') {
-		console.log('search 내부임');
 		const selectedText = target.innerText;
 		input.value = selectedText;
 		handleSubmit();
 		return;
 	} else if (target.className == 'item__btn') {
-		console.log('search 내부임');
 		const selectedItem = target.parentNode;
 		recentContainer.removeChild(selectedItem);
 		const removeRecentSearch = recentSearchTerms.filter(item => parseInt(selectedItem.id) !== item.id);
@@ -198,7 +179,6 @@ const handleBodyClick = event => {
 		saveStorage();
 		return;
 	} else {
-		console.log('search 외부임');
 		removeRecentItems();
 	}
 };
