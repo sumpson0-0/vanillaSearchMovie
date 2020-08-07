@@ -57,30 +57,47 @@
 .search-container .search .search-info {
 	display: none;
 	padding-bottom: 0.3rem;
+	font-size: 0.8rem;
 	color: rgb(180, 180, 180);
 }
 /* ********************recent-items******************* */
 .search-container .search .recent-items {
 }
 
-.search .recent-items .recent-item {
+.recent-items .recent-item {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 0.7rem 1rem;
+	padding: 0.5rem 1rem;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+.recent-items .recent-item:hover {
+	background-color: rgb(209, 209, 209);
+}
+.recent-items .recent-item:hover .item__btn {
+	display: block;
 }
 
 .recent-item .item__text {
 	width: 70%;
-	font-size: 1.3rem;
+	font-size: 1.2rem;
 }
 
 .recent-item .item__btn {
-	border: solid 1px rgb(146, 146, 146);
-	border-radius: 5px;
+	display: none;
+	border: none;
+	border-radius: 20%;
 	background-color: white;
-	color: rgb(189, 189, 189);
+	color: black;
 	outline: none;
+	cursor: pointer;
+	font-size: 0.7rem;
+}
+
+.recent-item .item__btn:hover {
+	background-color: rgb(143, 143, 143);
 }
 
 /* ********************show******************* */
