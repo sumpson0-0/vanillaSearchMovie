@@ -14,7 +14,14 @@ body {
 	height: 100%;
 	width: 100%;
 	padding: 3rem;
-	background-color: rgba(0, 0, 0, 0.918);
+	background: linear-gradient(
+		270deg,
+		rgba(31, 34, 41, 1) 0%,
+		rgba(22, 23, 32, 1) 25%,
+		rgba(18, 18, 31, 1) 50%,
+		rgba(22, 23, 32, 1) 75%,
+		rgba(31, 34, 41, 1) 100%
+	);
 }
 
 .main {
@@ -22,6 +29,5 @@ body {
 	flex-direction: column;
 	justify-content: center;
 	overflow: hidden;
-	margin: 4rem;
 	width: 100%;
 }
