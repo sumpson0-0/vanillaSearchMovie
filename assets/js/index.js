@@ -7,22 +7,27 @@ const searchBoundary = document.querySelector('.search-boundary');
 const searchInfo = document.querySelector('.search-info');
 const btn = document.querySelector('.item__btn');
 
-const resultContainer = document.querySelector('.results');
+const resultContainer = document.querySelector('.results-container');
+const results = document.querySelector('.results');
 
 let recentSearchTerms = [];
 let searchId = 0;
+let movieTitle = '';
+let currentPage = '';
+let lastPage = '';
 
 const paintMovie = movie => {
 	const resultItem = document.createElement('article');
 	resultItem.className = 'result';
 	const poster = document.createElement('div');
 	poster.className = 'result__poster';
-	poster.style.backgroundImage = `url('${movie.Poster}')`;
+	poster.style.backgroundImage =
+		movie.Poster === 'N/A' ? "url('./assets/images/image_not_found.jpg')" : `url(${movie.Poster})`;
 	const movieInfo = document.createElement('div');
 	movieInfo.className = 'result__info';
 	const title = document.createElement('h1');
 	title.className = 'result__title';
-	title.innerText = movie.Title;
+	title.innerText = movie.Title.length > 40 ? movie.Title.substr(0, 40) + '...' : movie.Title;
 	const year = document.createElement('p');
 	year.className = 'result__year';
 	year.innerText = movie.Year;
@@ -31,13 +36,23 @@ const paintMovie = movie => {
 	movieInfo.appendChild(year);
 	resultItem.appendChild(poster);
 	resultItem.appendChild(movieInfo);
-	resultContainer.appendChild(resultItem);
+	results.appendChild(resultItem);
 };
 
-const getMovies = title => {
-	fetch(`http://www.omdbapi.com/?s=${title}&apikey=432c5b0f`, {
-		Title: 'man',
-	})
+const handleScroll = () => {
+	const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+	if (scrollTop + clientHeight >= scrollHeight - 1) {
+		window.removeEventListener('scroll', handleScroll);
+		if (currentPage < lastPage) {
+			currentPage = currentPage + 1;
+			getMovies();
+		}
+		console.log('현재페이지', currentPage);
+	}
+};
+
+const getMovies = () => {
+	fetch(`http://www.omdbapi.com/?s=${movieTitle}&page=${currentPage}&apikey=432c5b0f`)
 		.then(response => {
 			if (response && response.ok) {
 				return response.json();
@@ -45,13 +60,18 @@ const getMovies = title => {
 		})
 		.then(json => {
 			if (json.Response === 'True') {
-				console.log('영화 가져오기 성공');
 				const movies = json.Search;
-				console.log(movies);
+				const totalResults = json.totalResults;
+				lastPage = Math.round(totalResults / 10);
+				console.log('영화 가져오기 성공');
+				console.log('영화 총 갯수', totalResults, '마지막 페이지', lastPage);
+				resultContainer.style.display = 'flex';
 				movies.forEach(movie => paintMovie(movie));
+				window.addEventListener('scroll', handleScroll);
 			} else if (json.Response === 'False') {
 				console.log('영화 가져오기 실패');
 				alert(json.Error);
+				return;
 			}
 		});
 };
@@ -64,8 +84,11 @@ const handleSubmit = () => {
 		saveRecentSearch(inputText);
 		input.blur();
 		removeRecentItems();
+		results.innerHTML = '';
+		movieTitle = inputText;
+		currentPage = 1;
+		getMovies();
 	}
-	getMovies(inputText);
 };
 
 const removeRecentItems = () => {
@@ -93,14 +116,10 @@ const paintRecentSearch = movie => {
 	div.id = recentSearchTerms.length + 1;
 	div.className = 'recent-item';
 	const text = document.createElement('p');
-	if (movie.text.length > 12) {
-		text.innerText = movie.text.substr(0, 12) + '...';
-	} else {
-		text.innerText = movie.text;
-	}
+	text.innerText = movie.text.length > 15 ? movie.text.substr(0, 15) + '...' : movie.text;
 	text.className = 'item__text';
 	const btn = document.createElement('button');
-	btn.innerText = 'Select ✖';
+	btn.innerText = '✖';
 	btn.className = 'item__btn';
 	div.appendChild(text);
 	div.appendChild(btn);
@@ -110,9 +129,7 @@ const paintRecentSearch = movie => {
 
 const handleFocus = () => {
 	const loadRecentSearch = JSON.parse(localStorage.getItem('movie'));
-	if (loadRecentSearch === null) {
-		console.log('없음');
-	}
+
 	if (Array.isArray(loadRecentSearch) && loadRecentSearch.length > 0) {
 		console.log('있음');
 		input.removeEventListener('focus', handleFocus);
@@ -129,10 +146,6 @@ const handleFocus = () => {
 			loadRecentSearch.forEach(movie => paintRecentSearch(movie));
 		}
 	}
-};
-
-const handleBtnClick = event => {
-	console.log(event.target, event.currentTarget);
 };
 
 const handleBodyClick = event => {
@@ -166,9 +179,15 @@ const handleBodyClick = event => {
 		return;
 	} else if (target.className == 'recent-item') {
 		console.log('search 내부임');
+		const selectedText = target.firstChild.innerText;
+		input.value = selectedText;
+		handleSubmit();
 		return;
 	} else if (target.className == 'item__text') {
 		console.log('search 내부임');
+		const selectedText = target.innerText;
+		input.value = selectedText;
+		handleSubmit();
 		return;
 	} else if (target.className == 'item__btn') {
 		console.log('search 내부임');
@@ -187,12 +206,3 @@ const handleBodyClick = event => {
 input.addEventListener('focus', handleFocus);
 form.addEventListener('submit', handleSubmit);
 body.addEventListener('click', handleBodyClick);
-
-// 구현할 것
-// 최근 검색어 클릭시 input에 값 전달되는 기능
-// 최근 검색어 hover시 배경 회색
-// recent searches 나올 때 부드럽게 나오게하기
-// 새로고침시 영화 리스트 사라지고 초기 화면으로 이동
-// 각 데이터 있는지 검증
-// 데이터 받기 전에는 reaultContainer 디스플레이 없어야하고
-// 다른거 검색하면 이전 데이터 나왔던 것 지워지고 새걸로 씌워져야 해
