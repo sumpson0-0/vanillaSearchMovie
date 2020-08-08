@@ -1,14 +1,13 @@
 const body = document.querySelector('body');
-
 const form = document.querySelector('.search-area__form');
 const input = document.querySelector('.search-area__input');
 const recentContainer = document.querySelector('.recent-items');
 const searchBoundary = document.querySelector('.search-boundary');
 const searchInfo = document.querySelector('.search-info');
 const btn = document.querySelector('.item__btn');
-
 const resultContainer = document.querySelector('.results-container');
 const results = document.querySelector('.results');
+const result = document.querySelector('.result');
 
 let recentSearchTerms = [];
 let searchId = 0;
@@ -19,6 +18,12 @@ let lastPage = '';
 const paintMovie = movie => {
 	const resultItem = document.createElement('article');
 	resultItem.className = 'result';
+	const link = document.createElement('a');
+	link.className = 'result__imdb';
+	link.href = `https://www.imdb.com/title/${movie.imdbID}`;
+	link.target = '_blank';
+	const resultShow = document.createElement('div');
+	resultShow.className = 'result--show';
 	const poster = document.createElement('div');
 	poster.className = 'result__poster';
 	poster.style.backgroundImage =
@@ -31,11 +36,12 @@ const paintMovie = movie => {
 	const year = document.createElement('p');
 	year.className = 'result__year';
 	year.innerText = movie.Year;
-
 	movieInfo.appendChild(title);
 	movieInfo.appendChild(year);
-	resultItem.appendChild(poster);
-	resultItem.appendChild(movieInfo);
+	resultShow.appendChild(poster);
+	resultShow.appendChild(movieInfo);
+	link.appendChild(resultShow);
+	resultItem.appendChild(link);
 	results.appendChild(resultItem);
 };
 
@@ -117,7 +123,6 @@ const paintRecentSearch = movie => {
 
 const handleFocus = () => {
 	const loadRecentSearch = JSON.parse(localStorage.getItem('movie'));
-
 	if (Array.isArray(loadRecentSearch) && loadRecentSearch.length > 0) {
 		input.removeEventListener('focus', handleFocus);
 		if (loadRecentSearch.length > 5) {
