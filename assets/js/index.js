@@ -69,9 +69,11 @@ const getMovies = () => {
 				const totalResults = json.totalResults;
 				lastPage = Math.round(totalResults / 10);
 				resultContainer.style.display = 'flex';
+				body.style.height = '100%';
 				movies.forEach(movie => paintMovie(movie));
 				window.addEventListener('scroll', handleScroll);
 			} else if (json.Response === 'False') {
+				body.style.height = '100vh';
 				alert(json.Error);
 				return;
 			}
