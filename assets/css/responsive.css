@@ -1,0 +1,14 @@
+/* 1040px 이하 */
+
+@media (max-width: 1040px) {
+	.results-container .results {
+		display: grid;
+		grid-auto-rows: 17.5rem;
+		grid-template-columns: repeat(3, 9rem);
+		gap: 4.5rem;
+	}
+}
+
+/* 768px 이하 (for tablet)*/
+
+/* 375px 이하 (for smartphone)*/

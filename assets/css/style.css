@@ -1,6 +1,7 @@
 @import 'reset.css';
 @import 'search.css';
 @import 'movie.css';
+@import 'responsive.css';
 
 * {
 	font-family: 'Barlow', sans-serif;
