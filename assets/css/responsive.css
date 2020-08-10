@@ -71,8 +71,8 @@
 	}
 }
 
-/* 400px 이하 (for smartphone)*/
-@media (max-width: 400px) {
+/* 480px 이하 (for smartphone)*/
+@media (max-width: 480px) {
 	html {
 		font-size: 9px;
 	}
