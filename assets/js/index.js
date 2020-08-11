@@ -17,6 +17,7 @@ let lastPage = '';
 
 const paintMovie = movie => {
 	const resultItem = document.createElement('article');
+	resultItem.id = movie.id;
 	resultItem.className = 'result';
 	const poster = document.createElement('div');
 	poster.className = 'result__poster';
@@ -140,7 +141,41 @@ const removeRecentItems = () => {
 	input.addEventListener('focus', handleFocus);
 };
 
-const handleBodyClick = event => {
+const modalContainer = document.querySelector('.modal');
+const modalContent = document.querySelector('.modal__content');
+const contentBackground = document.querySelector('.content__background');
+const contentTitle = document.querySelector('.content__title');
+const contentDate = document.querySelector('.content__date');
+const contentGenres = document.querySelector('.content__genres');
+const contentStory = document.querySelector('.story');
+const modalExitBtn = document.querySelector('.content__exit');
+
+const openModal = movie => {
+	modalContainer.style.display = 'flex';
+	contentBackground.style.backgroundImage =
+		movie.poster_path === null ? 'none' : `url(https://image.tmdb.org/t/p/w500${movie.poster_path})`;
+	contentTitle.innerText = movie.original_title;
+	contentDate.innerText = movie.release_date;
+	const genres = movie.genres.map(genre => {
+		return genre.name;
+	});
+	contentGenres.innerText = genres.join(', ');
+	contentStory.innerText = movie.overview;
+};
+
+const getMovieDetail = id => {
+	fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=05719c9ff8d5a1b640025f01f46560b5&language=en-US`)
+		.then(response => {
+			if (response && response.ok) {
+				return response.json();
+			}
+		})
+		.then(json => {
+			openModal(json);
+		});
+};
+
+const handleClick = event => {
 	const target = event.target;
 	if (target == event.currentTarget.querySelector('.search')) {
 		return;
@@ -177,6 +212,21 @@ const handleBodyClick = event => {
 		recentSearchTerms = removeRecentSearch;
 		saveStorage();
 		return;
+	} else if (target.className === 'result__poster') {
+		const movieId = target.parentElement.id;
+		getMovieDetail(movieId);
+		removeRecentItems();
+		return;
+	} else if (target.className === 'result__info') {
+		const movieId = target.parentElement.id;
+		getMovieDetail(movieId);
+		removeRecentItems();
+		return;
+	} else if (target.className === 'result__title') {
+		const movieId = target.parentElement.parentElement.id;
+		getMovieDetail(movieId);
+		removeRecentItems();
+		return;
 	} else {
 		removeRecentItems();
 	}
@@ -184,4 +234,4 @@ const handleBodyClick = event => {
 
 input.addEventListener('focus', handleFocus);
 form.addEventListener('submit', handleSubmit);
-body.addEventListener('click', handleBodyClick);
+body.addEventListener('click', handleClick);
