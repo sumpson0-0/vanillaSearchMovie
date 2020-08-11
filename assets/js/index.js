@@ -23,7 +23,7 @@ const paintMovie = movie => {
 	poster.style.backgroundImage =
 		movie.poster_path === null
 			? "url('./assets/images/image_not_found.jpg')"
-			: `url(https://image.tmdb.org/t/p/w500/${movie.poster_path})`;
+			: `url(https://image.tmdb.org/t/p/w500${movie.poster_path})`;
 	const movieInfo = document.createElement('div');
 	movieInfo.className = 'result__info';
 	const title = document.createElement('h1');
