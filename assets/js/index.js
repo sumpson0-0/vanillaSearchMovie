@@ -21,12 +21,15 @@ const paintMovie = movie => {
 	const poster = document.createElement('div');
 	poster.className = 'result__poster';
 	poster.style.backgroundImage =
-		movie.Poster === 'N/A' ? "url('./assets/images/image_not_found.jpg')" : `url(${movie.Poster})`;
+		movie.poster_path === null
+			? "url('./assets/images/image_not_found.jpg')"
+			: `url(https://image.tmdb.org/t/p/w500/${movie.poster_path})`;
 	const movieInfo = document.createElement('div');
 	movieInfo.className = 'result__info';
 	const title = document.createElement('h1');
 	title.className = 'result__title';
-	title.innerText = movie.Title.length > 40 ? movie.Title.substr(0, 40) + '...' : movie.Title;
+	title.innerText =
+		movie.original_title.length > 30 ? movie.original_title.substr(0, 30) + '...' : movie.original_title;
 	movieInfo.appendChild(title);
 	resultItem.appendChild(poster);
 	resultItem.appendChild(movieInfo);
@@ -45,27 +48,25 @@ const handleScroll = () => {
 };
 
 const getMovies = () => {
-	// Search API
-	// `https://api.themoviedb.org/3/search/company?api_key=05719c9ff8d5a1b640025f01f46560b5&query=${movieTitle}&page=${currentPage}`
-
-	fetch(`http://www.omdbapi.com/?s=${movieTitle}&page=${currentPage}&apikey=432c5b0f`)
+	fetch(
+		`https://api.themoviedb.org/3/search/movie?api_key=05719c9ff8d5a1b640025f01f46560b5&language=en-US&query=${movieTitle}&page=${currentPage}`,
+	)
 		.then(response => {
 			if (response && response.ok) {
 				return response.json();
 			}
 		})
 		.then(json => {
-			if (json.Response === 'True') {
-				const movies = json.Search;
-				const totalResults = json.totalResults;
-				lastPage = Math.round(totalResults / 10);
+			const movies = json.results;
+			if (Array.isArray(movies) && movies.length > 0) {
+				lastPage = json.total_pages;
 				resultContainer.style.display = 'flex';
 				body.style.height = '100%';
 				movies.forEach(movie => paintMovie(movie));
 				window.addEventListener('scroll', handleScroll);
-			} else if (json.Response === 'False') {
+			} else {
 				body.style.height = '100vh';
-				alert(json.Error);
+				alert('Movie Not Found!');
 				return;
 			}
 		});
