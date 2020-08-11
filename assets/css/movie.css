@@ -12,6 +12,9 @@
 }
 
 .results .result {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	height: 100%;
 	cursor: pointer;
 }
@@ -31,18 +34,7 @@
 	}
 }
 
-.result .result__imdb {
-	text-decoration: none;
-}
-
-.result__imdb .result--show {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	height: 100%;
-}
-
-.result--show .result__poster {
+.result .result__poster {
 	width: 100%;
 	height: 78%;
 	background-repeat: no-repeat;
@@ -51,7 +43,7 @@
 	border-radius: 10px 10px 0 0 / 10px 10px 0 0;
 }
 
-.result--show .result__info {
+.result .result__info {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;

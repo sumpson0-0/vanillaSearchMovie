@@ -24,7 +24,7 @@
 		grid-template-columns: 40rem;
 		gap: 2rem;
 	}
-	.result__imdb .result--show {
+	.results .result {
 		flex-direction: row;
 		justify-content: space-between;
 		padding: 1rem 3rem;
@@ -32,25 +32,25 @@
 		background-color: #f9b949;
 	}
 
-	.result:nth-child(2n) .result__imdb .result--show {
+	.result:nth-child(2n) {
 		background-color: #b06010;
 	}
 
-	.result:nth-child(3n) .result__imdb .result--show {
+	.result:nth-child(3n) {
 		background-color: #004990;
 	}
 
-	.result:nth-child(5n) .result__imdb .result--show {
+	.result:nth-child(5n) {
 		background-color: #b50938;
 	}
 
-	.result--show .result__poster {
+	.result .result__poster {
 		width: 30%;
 		height: auto;
 		border-radius: 10px;
 	}
 
-	.result--show .result__info {
+	.result .result__info {
 		justify-content: space-between;
 		padding: 1.5rem 3rem;
 		width: 70%;
@@ -87,11 +87,11 @@
 		grid-template-columns: 30rem;
 		gap: 2rem;
 	}
-	.result--show .result__poster {
+	.result .result__poster {
 		width: 40%;
 	}
 
-	.result--show .result__info {
+	.result .result__info {
 		padding: 1.5rem 2rem;
 		width: 60%;
 	}

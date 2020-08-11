@@ -18,12 +18,6 @@ let lastPage = '';
 const paintMovie = movie => {
 	const resultItem = document.createElement('article');
 	resultItem.className = 'result';
-	const link = document.createElement('a');
-	link.className = 'result__imdb';
-	link.href = `https://www.imdb.com/title/${movie.imdbID}`;
-	link.target = '_blank';
-	const resultShow = document.createElement('div');
-	resultShow.className = 'result--show';
 	const poster = document.createElement('div');
 	poster.className = 'result__poster';
 	poster.style.backgroundImage =
@@ -38,10 +32,8 @@ const paintMovie = movie => {
 	year.innerText = movie.Year;
 	movieInfo.appendChild(title);
 	movieInfo.appendChild(year);
-	resultShow.appendChild(poster);
-	resultShow.appendChild(movieInfo);
-	link.appendChild(resultShow);
-	resultItem.appendChild(link);
+	resultItem.appendChild(poster);
+	resultItem.appendChild(movieInfo);
 	results.appendChild(resultItem);
 };
 
@@ -57,6 +49,9 @@ const handleScroll = () => {
 };
 
 const getMovies = () => {
+	// Search API
+	// `https://api.themoviedb.org/3/search/company?api_key=05719c9ff8d5a1b640025f01f46560b5&query=${movieTitle}&page=${currentPage}`
+
 	fetch(`http://www.omdbapi.com/?s=${movieTitle}&page=${currentPage}&apikey=432c5b0f`)
 		.then(response => {
 			if (response && response.ok) {
