@@ -27,11 +27,7 @@ const paintMovie = movie => {
 	const title = document.createElement('h1');
 	title.className = 'result__title';
 	title.innerText = movie.Title.length > 40 ? movie.Title.substr(0, 40) + '...' : movie.Title;
-	const year = document.createElement('p');
-	year.className = 'result__year';
-	year.innerText = movie.Year;
 	movieInfo.appendChild(title);
-	movieInfo.appendChild(year);
 	resultItem.appendChild(poster);
 	resultItem.appendChild(movieInfo);
 	results.appendChild(resultItem);

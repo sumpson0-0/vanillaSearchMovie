@@ -55,19 +55,11 @@
 		padding: 1.5rem 3rem;
 		width: 70%;
 		height: 100%;
+		font-size: 2.3rem;
 		border-radius: none;
 	}
 	.result:hover .result__info {
 		animation: none;
-	}
-	.result__info .result__title {
-		padding-bottom: 2rem;
-		font-size: 2.3rem;
-	}
-
-	.result__info .result__year {
-		font-size: 1.4rem;
-		color: rgb(224, 224, 224);
 	}
 }
 
@@ -94,13 +86,6 @@
 	.result .result__info {
 		padding: 1.5rem 2rem;
 		width: 60%;
-	}
-	.result__info .result__title {
-		padding-bottom: 1.5rem;
 		font-size: 1.5rem;
-	}
-
-	.result__info .result__year {
-		font-size: 0.9rem;
 	}
 }
