@@ -40,7 +40,6 @@
 
 .search-area .search-area__input::placeholder {
 	font-size: 1.7rem;
-	font-weight: bold;
 	color: rgb(224, 224, 224);
 	line-height: 3rem;
 }
