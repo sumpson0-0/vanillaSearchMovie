@@ -7,6 +7,10 @@
 		grid-template-columns: repeat(3, 9rem);
 		gap: 4.5rem;
 	}
+	.modal__content .content__bg {
+		width: 100%;
+		background-size: cover;
+	}
 }
 
 /* 768px 이하 (for tablet)*/
@@ -61,6 +65,14 @@
 	.result:hover .result__info {
 		animation: none;
 	}
+
+	.content__info .content__etc {
+		font-size: 1.2rem;
+	}
+
+	.content__info .content__story {
+		font-size: 1.1rem;
+	}
 }
 
 /* 480px 이하 (for smartphone)*/
@@ -86,6 +98,6 @@
 	.result .result__info {
 		padding: 1.5rem 2rem;
 		width: 60%;
-		font-size: 1.5rem;
+		font-size: 2rem;
 	}
 }
