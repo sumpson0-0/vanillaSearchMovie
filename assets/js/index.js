@@ -1,16 +1,14 @@
 const body = document.querySelector('body');
-const form = document.querySelector('.search-area__form');
-const input = document.querySelector('.search-area__input');
+const searchContainer = document.querySelector('.search-container');
+const search = document.querySelector('.search');
+const searchForm = document.querySelector('.search-area__form');
+const searchInput = document.querySelector('.search-area__input');
 const recentContainer = document.querySelector('.recent-items');
-const searchBoundary = document.querySelector('.search-boundary');
-const searchInfo = document.querySelector('.search-info');
-const btn = document.querySelector('.item__btn');
 const resultContainer = document.querySelector('.results-container');
 const results = document.querySelector('.results');
-const result = document.querySelector('.result');
-const modalContainer = document.querySelector('.modal');
+const modalContainer = document.querySelector('.modal-container');
 const modalContent = document.querySelector('.modal__content');
-const contentBg = document.querySelector('.content__bg');
+const contentBg = document.querySelector('.modal__bg');
 const contentTitle = document.querySelector('.content__title');
 const contentDate = document.querySelector('.content__date');
 const contentGenres = document.querySelector('.content__genres');
@@ -22,6 +20,23 @@ let searchId = 0;
 let movieTitle = '';
 let currentPage = '';
 let lastPage = '';
+
+const handleScroll = () => {
+	const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+	if (scrollTop + clientHeight >= scrollHeight - 1) {
+		window.removeEventListener('scroll', handleScroll);
+		if (currentPage < lastPage) {
+			currentPage = currentPage + 1;
+			getMovies();
+		}
+	}
+};
+
+const handleExitClick = () => {
+	modalContainer.style.display = 'none';
+	body.classList.remove('modal-open');
+	clearRecentSearch();
+};
 
 const openModal = movie => {
 	const genres = movie.genres.map(genre => {
@@ -35,6 +50,29 @@ const openModal = movie => {
 	contentDate.innerText = movie.release_date;
 	contentGenres.innerText = genres.join(', ');
 	contentStory.innerText = movie.overview.length > 450 ? movie.overview.substr(0, 450) + '...' : movie.overview;
+	body.classList.add('modal-open');
+};
+
+const paintMovie = movie => {
+	const resultItem = document.createElement('article');
+	const poster = document.createElement('div');
+	const movieInfo = document.createElement('div');
+	const title = document.createElement('h1');
+	resultItem.id = movie.id;
+	resultItem.className = 'result';
+	poster.className = 'result__poster';
+	poster.style.backgroundImage =
+		movie.poster_path === null
+			? "url('./assets/images/image_not_found.jpg')"
+			: `url(https://image.tmdb.org/t/p/w500${movie.poster_path})`;
+	movieInfo.className = 'result__info';
+	title.className = 'result__title';
+	title.innerText =
+		movie.original_title.length > 30 ? movie.original_title.substr(0, 30) + '...' : movie.original_title;
+	movieInfo.appendChild(title);
+	resultItem.appendChild(poster);
+	resultItem.appendChild(movieInfo);
+	results.appendChild(resultItem);
 };
 
 const getMovieDetail = id => {
@@ -49,37 +87,10 @@ const getMovieDetail = id => {
 		});
 };
 
-const paintMovie = movie => {
-	const resultItem = document.createElement('article');
-	resultItem.id = movie.id;
-	resultItem.className = 'result';
-	const poster = document.createElement('div');
-	poster.className = 'result__poster';
-	poster.style.backgroundImage =
-		movie.poster_path === null
-			? "url('./assets/images/image_not_found.jpg')"
-			: `url(https://image.tmdb.org/t/p/w500${movie.poster_path})`;
-	const movieInfo = document.createElement('div');
-	movieInfo.className = 'result__info';
-	const title = document.createElement('h1');
-	title.className = 'result__title';
-	title.innerText =
-		movie.original_title.length > 30 ? movie.original_title.substr(0, 30) + '...' : movie.original_title;
-	movieInfo.appendChild(title);
-	resultItem.appendChild(poster);
-	resultItem.appendChild(movieInfo);
-	results.appendChild(resultItem);
-};
-
-const handleScroll = () => {
-	const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-	if (scrollTop + clientHeight >= scrollHeight - 1) {
-		window.removeEventListener('scroll', handleScroll);
-		if (currentPage < lastPage) {
-			currentPage = currentPage + 1;
-			getMovies();
-		}
-	}
+const handleClickMovie = e => {
+	const movieId = e.currentTarget.id;
+	getMovieDetail(movieId);
+	clearRecentSearch();
 };
 
 const getMovies = () => {
@@ -98,23 +109,25 @@ const getMovies = () => {
 				resultContainer.style.display = 'flex';
 				body.style.height = '100%';
 				movies.forEach(movie => paintMovie(movie));
+				const movieResults = document.querySelectorAll('.result');
+				for (let i = 0; i < movieResults.length; i++) {
+					movieResults[i].addEventListener('click', handleClickMovie);
+				}
 				window.addEventListener('scroll', handleScroll);
 			} else {
-				body.style.height = '100vh';
 				alert('Movie Not Found!');
-				return;
 			}
 		});
 };
 
-const handleSubmit = () => {
-	event.preventDefault();
-	const inputText = input.value;
-	input.value = '';
+const handleSubmitMovie = e => {
+	e.preventDefault();
+	const inputText = searchInput.value;
+	searchInput.value = '';
 	if (inputText.length > 0) {
 		saveRecentSearch(inputText);
-		input.blur();
-		removeRecentItems();
+		searchInput.blur();
+		clearRecentSearch();
 		results.innerHTML = '';
 		movieTitle = inputText;
 		currentPage = 1;
@@ -136,106 +149,86 @@ const saveRecentSearch = title => {
 
 const paintRecentSearch = movie => {
 	const div = document.createElement('div');
+	const text = document.createElement('p');
+	const span = document.createElement('span');
+	const i = document.createElement('i');
+	const btn = document.createElement('button');
 	div.id = recentSearchTerms.length + 1;
 	div.className = 'recent-item';
-	const text = document.createElement('p');
 	text.innerText = movie.text.length > 15 ? movie.text.substr(0, 15) + '...' : movie.text;
 	text.className = 'item__text';
-	const btn = document.createElement('button');
+	span.className = 'recent-icon';
+	i.className = 'fas fa-history';
 	btn.innerText = '✖';
 	btn.className = 'item__btn';
+	span.appendChild(i);
+	div.appendChild(span);
 	div.appendChild(text);
 	div.appendChild(btn);
 	recentContainer.appendChild(div);
 	saveRecentSearch(movie.text);
 };
 
-const handleFocus = () => {
-	const loadRecentSearch = JSON.parse(localStorage.getItem('movie'));
-	if (Array.isArray(loadRecentSearch) && loadRecentSearch.length > 0) {
-		input.removeEventListener('focus', handleFocus);
-		if (loadRecentSearch.length > 5) {
-			const newRecentSearch = loadRecentSearch.filter(movie => movie.id !== 1);
-			searchBoundary.classList.add('show');
-			searchInfo.classList.add('show');
-			newRecentSearch.forEach(movie => paintRecentSearch(movie));
-		} else {
-			searchBoundary.classList.add('show');
-			searchInfo.classList.add('show');
-			loadRecentSearch.forEach(movie => paintRecentSearch(movie));
+const handleRecentClick = e => {
+	const target = e.target;
+	const currentTarget = e.currentTarget;
+	if (target.className == 'item__btn') {
+		const removeRecentSearch = recentSearchTerms.filter(item => parseInt(currentTarget.id) !== item.id);
+		recentContainer.removeChild(currentTarget);
+		recentSearchTerms = removeRecentSearch;
+		saveStorage();
+	} else if (currentTarget.contains(target)) {
+		searchInput.value = currentTarget.children[1].innerText;
+		const inputText = searchInput.value;
+		searchInput.value = '';
+		if (inputText.length > 0) {
+			saveRecentSearch(inputText);
+			searchInput.blur();
+			clearRecentSearch();
+			results.innerHTML = '';
+			movieTitle = inputText;
+			currentPage = 1;
+			getMovies();
 		}
 	}
 };
 
-const removeRecentItems = () => {
-	searchBoundary.classList.remove('show');
-	searchInfo.classList.remove('show');
-	recentSearchTerms = [];
-	recentContainer.innerHTML = '';
-	input.addEventListener('focus', handleFocus);
-};
-
-const handleClick = event => {
-	const target = event.target;
-	if (target == event.currentTarget.querySelector('.search')) {
-		return;
-	} else if (target == event.currentTarget.querySelector('.search-area')) {
-		return;
-	} else if (target == event.currentTarget.querySelector('.fa-search')) {
-		return;
-	} else if (target == event.currentTarget.querySelector('.search-area__i')) {
-		return;
-	} else if (target == event.currentTarget.querySelector('.search-area__form')) {
-		return;
-	} else if (target == event.currentTarget.querySelector('.search-area__input')) {
-		return;
-	} else if (target == event.currentTarget.querySelector('.search-boundary')) {
-		return;
-	} else if (target == event.currentTarget.querySelector('.search-info')) {
-		return;
-	} else if (target == event.currentTarget.querySelector('.recent-items')) {
-		return;
-	} else if (target.className == 'recent-item') {
-		const selectedText = target.firstChild.innerText;
-		input.value = selectedText;
-		handleSubmit();
-		return;
-	} else if (target.className == 'item__text') {
-		const selectedText = target.innerText;
-		input.value = selectedText;
-		handleSubmit();
-		return;
-	} else if (target.className == 'item__btn') {
-		const selectedItem = target.parentNode;
-		recentContainer.removeChild(selectedItem);
-		const removeRecentSearch = recentSearchTerms.filter(item => parseInt(selectedItem.id) !== item.id);
-		recentSearchTerms = removeRecentSearch;
-		saveStorage();
-		return;
-	} else if (target.className === 'result__poster') {
-		const movieId = target.parentElement.id;
-		getMovieDetail(movieId);
-		removeRecentItems();
-		return;
-	} else if (target.className === 'result__info') {
-		const movieId = target.parentElement.id;
-		getMovieDetail(movieId);
-		removeRecentItems();
-		return;
-	} else if (target.className === 'result__title') {
-		const movieId = target.parentElement.parentElement.id;
-		getMovieDetail(movieId);
-		removeRecentItems();
-		return;
-	} else if (target.className === 'content__btn-exit') {
-		modalContainer.style.display = 'none';
-		removeRecentItems();
-		return;
-	} else {
-		removeRecentItems();
+const handleFocus = () => {
+	const loadRecentSearch = JSON.parse(localStorage.getItem('movie'));
+	if (Array.isArray(loadRecentSearch) && loadRecentSearch.length > 0) {
+		searchInput.removeEventListener('focus', handleFocus);
+		if (loadRecentSearch.length > 5) {
+			const newRecentSearch = loadRecentSearch.filter(movie => movie.id !== 1);
+			searchContainer.classList.add('show');
+			newRecentSearch.forEach(movie => paintRecentSearch(movie));
+		} else {
+			searchContainer.classList.add('show');
+			loadRecentSearch.forEach(movie => paintRecentSearch(movie));
+		}
+		const recentItem = document.querySelectorAll('.recent-item');
+		for (let i = 0; i < recentItem.length; i++) {
+			recentItem[i].addEventListener('click', handleRecentClick);
+		}
 	}
 };
 
-input.addEventListener('focus', handleFocus);
-form.addEventListener('submit', handleSubmit);
-body.addEventListener('click', handleClick);
+const clearRecentSearch = () => {
+	searchContainer.classList.remove('show');
+	recentSearchTerms = [];
+	recentContainer.innerHTML = '';
+	searchInput.addEventListener('focus', handleFocus);
+};
+
+const handleExternalClick = e => {
+	const target = e.target;
+	if (!search.contains(target) && searchContainer.classList.contains('show')) {
+		clearRecentSearch();
+	} else if (body.classList == 'modal-open' && !modalContent.contains(target)) {
+		handleExitClick();
+	}
+};
+
+searchInput.addEventListener('focus', handleFocus);
+searchForm.addEventListener('submit', handleSubmitMovie);
+modalExitBtn.addEventListener('click', handleExitClick);
+body.addEventListener('click', handleExternalClick);
