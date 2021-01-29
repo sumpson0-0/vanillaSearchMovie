@@ -3,7 +3,7 @@ const header = document.querySelector('.header');
 const search = document.querySelector('.search');
 const searchForm = document.querySelector('.search-form');
 const searchInput = document.querySelector('.search-form__input');
-const searchClearBtn = document.querySelector('.search-form__btn-clear');
+const searchClearBtn = document.querySelector('.search__btn-clear');
 const searchHistoryWrapper = document.querySelector('.search__history');
 const results = document.querySelector('.results');
 const resultsWrapper = document.querySelector('.results__wrapper--grid');
@@ -16,7 +16,7 @@ const modalGenres = document.querySelector('.previewModal__genres');
 const modalStory = document.querySelector('.previewModal__story');
 const modalBtn = document.querySelector('.previewModal__btn-close');
 
-let recentSearchTerms = [];
+let searchHistoryArr = [];
 let searchId = 0;
 let movieTitle = '';
 let currentPage = '';
@@ -33,10 +33,10 @@ const handleScroll = () => {
 	}
 };
 
-const handleExitClick = () => {
+const handleCloseClick = () => {
 	modalContainer.style.display = 'none';
 	body.classList.remove('open');
-	clearRecentSearch();
+	clearSearchHistory();
 };
 
 const openModal = movie => {
@@ -50,7 +50,7 @@ const openModal = movie => {
 		movie.original_title.length > 30 ? movie.original_title.substr(0, 30) + '...' : movie.original_title;
 	modalDate.innerText = movie.release_date;
 	modalGenres.innerText = genres.join(', ');
-	modalStory.innerText = movie.overview.length > 450 ? movie.overview.substr(0, 450) + '...' : movie.overview;
+	modalStory.innerText = movie.overview.length > 300 ? movie.overview.substr(0, 300) + '...' : movie.overview;
 	body.classList.add('open');
 };
 
@@ -91,7 +91,7 @@ const getMovieDetail = id => {
 const handleClickMovie = e => {
 	const movieId = e.currentTarget.id;
 	getMovieDetail(movieId);
-	clearRecentSearch();
+	clearSearchHistory();
 };
 
 const getMovies = () => {
@@ -121,14 +121,14 @@ const getMovies = () => {
 		});
 };
 
-const handleSubmitMovie = e => {
+const handleSearchSubmit = e => {
 	e.preventDefault();
 	const inputText = searchInput.value;
 	searchInput.value = '';
 	if (inputText.length > 0) {
-		saveRecentSearch(inputText);
+		saveSearchHistory(inputText);
 		searchInput.blur();
-		clearRecentSearch();
+		clearSearchHistory();
 		resultsWrapper.innerHTML = '';
 		movieTitle = inputText;
 		currentPage = 1;
@@ -136,56 +136,58 @@ const handleSubmitMovie = e => {
 	}
 };
 
-const saveStorage = () => localStorage.setItem('movie', JSON.stringify(recentSearchTerms));
+const saveStorage = () => localStorage.setItem('movie', JSON.stringify(searchHistoryArr));
 
-const saveRecentSearch = title => {
-	searchId = recentSearchTerms.length + 1;
+const saveSearchHistory = title => {
+	searchId = searchHistoryArr.length + 1;
 	const searchWord = {
 		id: searchId,
 		text: title,
 	};
-	recentSearchTerms.push(searchWord);
+	searchHistoryArr.push(searchWord);
 	saveStorage();
 };
 
-const paintRecentSearch = movie => {
+const paintSearchHistory = movie => {
 	const div = document.createElement('div');
 	const text = document.createElement('p');
 	const span = document.createElement('span');
 	const i = document.createElement('i');
+	const deleteI = document.createElement('i');
 	const btn = document.createElement('button');
-	div.id = recentSearchTerms.length + 1;
+	div.id = searchHistoryArr.length + 1;
 	div.className = 'history';
 	text.innerText = movie.text.length > 15 ? movie.text.substr(0, 15) + '...' : movie.text;
 	text.className = 'history__text';
 	span.className = 'history__i';
 	i.className = 'fas fa-history';
-	btn.innerText = '✖';
 	btn.className = 'history__btn-delete';
+	deleteI.className = 'fas fa-times';
+	btn.appendChild(deleteI);
 	span.appendChild(i);
 	div.appendChild(span);
 	div.appendChild(text);
 	div.appendChild(btn);
 	searchHistoryWrapper.appendChild(div);
-	saveRecentSearch(movie.text);
+	saveSearchHistory(movie.text);
 };
 
-const handleRecentClick = e => {
+const handleHistoryClick = e => {
 	const target = e.target;
 	const currentTarget = e.currentTarget;
 	if (target.className == 'history__btn-delete') {
-		const removeRecentSearch = recentSearchTerms.filter(item => parseInt(currentTarget.id) !== item.id);
+		const removeRecentSearch = searchHistoryArr.filter(item => parseInt(currentTarget.id) !== item.id);
 		searchHistoryWrapper.removeChild(currentTarget);
-		recentSearchTerms = removeRecentSearch;
+		searchHistoryArr = removeRecentSearch;
 		saveStorage();
 	} else if (currentTarget.contains(target)) {
 		searchInput.value = currentTarget.children[1].innerText;
 		const inputText = searchInput.value;
 		searchInput.value = '';
 		if (inputText.length > 0) {
-			saveRecentSearch(inputText);
+			saveSearchHistory(inputText);
 			searchInput.blur();
-			clearRecentSearch();
+			clearSearchHistory();
 			resultsWrapper.innerHTML = '';
 			movieTitle = inputText;
 			currentPage = 1;
@@ -194,47 +196,48 @@ const handleRecentClick = e => {
 	}
 };
 
-const handleFocus = e => {
-	const loadRecentSearch = JSON.parse(localStorage.getItem('movie'));
-	if (Array.isArray(loadRecentSearch) && loadRecentSearch.length > 0) {
-		searchInput.removeEventListener('focus', handleFocus);
-		if (loadRecentSearch.length > 5) {
-			const newRecentSearch = loadRecentSearch.filter(movie => movie.id !== 1);
+const handleInputFocus = e => {
+	const loadSearchHistory = JSON.parse(localStorage.getItem('movie'));
+	if (Array.isArray(loadSearchHistory) && loadSearchHistory.length > 0) {
+		searchInput.removeEventListener('focus', handleInputFocus);
+		if (loadSearchHistory.length > 5) {
+			const newRecentSearch = loadSearchHistory.filter(movie => movie.id !== 1);
 			header.classList.add('show');
-			newRecentSearch.forEach(movie => paintRecentSearch(movie));
+			newRecentSearch.forEach(movie => paintSearchHistory(movie));
 		} else {
 			header.classList.add('show');
-			loadRecentSearch.forEach(movie => paintRecentSearch(movie));
+			loadSearchHistory.forEach(movie => paintSearchHistory(movie));
 		}
-		const recentItem = document.querySelectorAll('.history');
-		for (let i = 0; i < recentItem.length; i++) {
-			recentItem[i].addEventListener('click', handleRecentClick);
+		const historyItem = document.querySelectorAll('.history');
+		for (let i = 0; i < historyItem.length; i++) {
+			historyItem[i].addEventListener('click', handleHistoryClick);
 		}
 	}
 };
 
-const clearRecentSearch = () => {
+const clearSearchHistory = () => {
 	header.classList.remove('show');
-	recentSearchTerms = [];
+	searchHistoryArr = [];
 	searchHistoryWrapper.innerHTML = '';
-	searchInput.addEventListener('focus', handleFocus);
+	searchInput.addEventListener('focus', handleInputFocus);
 };
 
 const handleExternalClick = e => {
 	const target = e.target;
 	if (!search.contains(target) && header.classList.contains('show')) {
-		clearRecentSearch();
+		clearSearchHistory();
 	} else if (body.classList == 'open' && !modalContent.contains(target)) {
-		handleExitClick();
+		handleCloseClick();
 	}
 };
 
-const handleClearClick = () => {
+const handleClearClick = e => {
+	e.preventDefault();
 	searchInput.value = '';
 };
 
 searchClearBtn.addEventListener('click', handleClearClick);
-searchInput.addEventListener('focus', handleFocus);
-searchForm.addEventListener('submit', handleSubmitMovie);
-modalBtn.addEventListener('click', handleExitClick);
+searchInput.addEventListener('focus', handleInputFocus);
+searchForm.addEventListener('submit', handleSearchSubmit);
+modalBtn.addEventListener('click', handleCloseClick);
 body.addEventListener('click', handleExternalClick);
