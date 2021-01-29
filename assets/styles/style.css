@@ -1,28 +1,27 @@
 @import 'reset.css';
-@import 'search.css';
-@import 'movie.css';
+@import 'header.css';
+@import 'results.css';
 @import 'modal.css';
 @import 'responsive.css';
 
 * {
-	font-family: 'PT Sans', sans-serif;
 	box-sizing: border-box;
+	word-break: normal;
+	word-wrap: break-word;
 }
 
 body {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	height: 100vh;
-	width: 100%;
-	background-color: #07111a;
+	height: 100%;
+	background-color: #c6af92;
+	font-family: 'PT Sans', sans-serif;
+}
+
+body.open {
+	overflow: hidden;
 }
 
 .main {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
 	overflow: hidden;
 	width: 100%;
-	padding: 3rem;
+	height: 70%;
 }
