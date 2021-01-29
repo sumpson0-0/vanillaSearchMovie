@@ -12,39 +12,37 @@
 		<title>Search Movies</title>
 	</head>
 	<body>
-		<main class="main">
-			<section class="search-container">
-				<div class="search">
-					<div class="search-area">
-						<span class="search-area__i"><i class="fas fa-search"></i></span>
-						<form class="search-area__form">
-							<input class="search-area__input" type="text" placeholder="Search for Movies" />
-						</form>
-					</div>
-					<div class="search-boundary"></div>
-					<p class="search-info">Recent Searches</p>
-					<div class="recent-items"></div>
+		<header class="header">
+			<div class="search">
+				<div class="search__content">
+					<span class="search__i"><i class="fas fa-search"></i></span>
+					<form class="search-form">
+						<input class="search-form__input" type="text" placeholder="Search for Movies" />
+					</form>
 				</div>
+				<div class="search__history"></div>
+			</div>
+		</header>
+		<main class="main">
+			<section class="results">
+				<div class="results__wrapper--grid"></div>
 			</section>
-			<section class="results-container">
-				<div class="results"></div>
+			<section class="previewModal">
+				<article class="previewModal__content">
+					<button class="previewModal__btn-close">X</button>
+					<div class="previewModal__bg"></div>
+					<div class="previewModal__info">
+							<div class="previewModal__etc">
+								<p class="previewModal__date"></p>
+								<p class="previewModal__vertical-bar">|</p>
+								<p class="previewModal__genres"></p>
+							</div>
+						<h1 class="previewModal__title"></h1>
+						<p class="previewModal__story"></p>
+					</div>
+				</article>
 			</section>
 		</main>
-		<section class="modal">
-			<article class="modal__content">
-				<div class="content__bg"></div>
-				<div class="content__info">
-					<div class="content__etc">
-						<p class="content__date"></p>
-						<p class="content__vertical-bar">|</p>
-						<p class="content__genres"></p>
-					</div>
-					<h1 class="content__title"></h1>
-					<p class="content__story"></p>
-					<button class="content__btn-exit">X</button>
-				</div>
-			</article>
-		</section>
 		<script type="text/javascript" src="assets/js/index.js"></script>
 	</body>
 </html>

@@ -1,19 +1,19 @@
 const body = document.querySelector('body');
-const searchContainer = document.querySelector('.search-container');
+const header = document.querySelector('.header');
 const search = document.querySelector('.search');
-const searchForm = document.querySelector('.search-area__form');
-const searchInput = document.querySelector('.search-area__input');
-const recentContainer = document.querySelector('.recent-items');
-const resultContainer = document.querySelector('.results-container');
+const searchForm = document.querySelector('.search-form');
+const searchInput = document.querySelector('.search-form__input');
+const searchHistoryWrapper = document.querySelector('.search__history');
 const results = document.querySelector('.results');
-const modalContainer = document.querySelector('.modal-container');
-const modalContent = document.querySelector('.modal__content');
-const contentBg = document.querySelector('.modal__bg');
-const contentTitle = document.querySelector('.content__title');
-const contentDate = document.querySelector('.content__date');
-const contentGenres = document.querySelector('.content__genres');
-const contentStory = document.querySelector('.content__story');
-const modalExitBtn = document.querySelector('.content__btn-exit');
+const resultsWrapper = document.querySelector('.results__wrapper--grid');
+const modalContainer = document.querySelector('.previewModal');
+const modalContent = document.querySelector('.previewModal__content');
+const modalBg = document.querySelector('.previewModal__bg');
+const modalTitle = document.querySelector('.previewModal__title');
+const modalDate = document.querySelector('.previewModal__date');
+const modalGenres = document.querySelector('.previewModal__genres');
+const modalStory = document.querySelector('.previewModal__story');
+const modalBtn = document.querySelector('.previewModal__btn-close');
 
 let recentSearchTerms = [];
 let searchId = 0;
@@ -34,7 +34,7 @@ const handleScroll = () => {
 
 const handleExitClick = () => {
 	modalContainer.style.display = 'none';
-	body.classList.remove('modal-open');
+	body.classList.remove('open');
 	clearRecentSearch();
 };
 
@@ -43,14 +43,14 @@ const openModal = movie => {
 		return genre.name;
 	});
 	modalContainer.style.display = 'flex';
-	contentBg.style.backgroundImage =
+	modalBg.style.backgroundImage =
 		movie.backdrop_path === null ? 'none' : `url(https://image.tmdb.org/t/p/w1280${movie.backdrop_path})`;
-	contentTitle.innerText =
+	modalTitle.innerText =
 		movie.original_title.length > 30 ? movie.original_title.substr(0, 30) + '...' : movie.original_title;
-	contentDate.innerText = movie.release_date;
-	contentGenres.innerText = genres.join(', ');
-	contentStory.innerText = movie.overview.length > 450 ? movie.overview.substr(0, 450) + '...' : movie.overview;
-	body.classList.add('modal-open');
+	modalDate.innerText = movie.release_date;
+	modalGenres.innerText = genres.join(', ');
+	modalStory.innerText = movie.overview.length > 450 ? movie.overview.substr(0, 450) + '...' : movie.overview;
+	body.classList.add('open');
 };
 
 const paintMovie = movie => {
@@ -72,7 +72,7 @@ const paintMovie = movie => {
 	movieInfo.appendChild(title);
 	resultItem.appendChild(poster);
 	resultItem.appendChild(movieInfo);
-	results.appendChild(resultItem);
+	resultsWrapper.appendChild(resultItem);
 };
 
 const getMovieDetail = id => {
@@ -106,7 +106,7 @@ const getMovies = () => {
 			const movies = json.results;
 			if (Array.isArray(movies) && movies.length > 0) {
 				lastPage = json.total_pages;
-				resultContainer.style.display = 'flex';
+				results.style.display = 'flex';
 				body.style.height = '100%';
 				movies.forEach(movie => paintMovie(movie));
 				const movieResults = document.querySelectorAll('.result');
@@ -128,7 +128,7 @@ const handleSubmitMovie = e => {
 		saveRecentSearch(inputText);
 		searchInput.blur();
 		clearRecentSearch();
-		results.innerHTML = '';
+		resultsWrapper.innerHTML = '';
 		movieTitle = inputText;
 		currentPage = 1;
 		getMovies();
@@ -154,27 +154,27 @@ const paintRecentSearch = movie => {
 	const i = document.createElement('i');
 	const btn = document.createElement('button');
 	div.id = recentSearchTerms.length + 1;
-	div.className = 'recent-item';
+	div.className = 'history';
 	text.innerText = movie.text.length > 15 ? movie.text.substr(0, 15) + '...' : movie.text;
-	text.className = 'item__text';
-	span.className = 'recent-icon';
+	text.className = 'history__text';
+	span.className = 'history__i';
 	i.className = 'fas fa-history';
 	btn.innerText = '✖';
-	btn.className = 'item__btn';
+	btn.className = 'history__btn-delete';
 	span.appendChild(i);
 	div.appendChild(span);
 	div.appendChild(text);
 	div.appendChild(btn);
-	recentContainer.appendChild(div);
+	searchHistoryWrapper.appendChild(div);
 	saveRecentSearch(movie.text);
 };
 
 const handleRecentClick = e => {
 	const target = e.target;
 	const currentTarget = e.currentTarget;
-	if (target.className == 'item__btn') {
+	if (target.className == 'history__btn-delete') {
 		const removeRecentSearch = recentSearchTerms.filter(item => parseInt(currentTarget.id) !== item.id);
-		recentContainer.removeChild(currentTarget);
+		searchHistoryWrapper.removeChild(currentTarget);
 		recentSearchTerms = removeRecentSearch;
 		saveStorage();
 	} else if (currentTarget.contains(target)) {
@@ -185,7 +185,7 @@ const handleRecentClick = e => {
 			saveRecentSearch(inputText);
 			searchInput.blur();
 			clearRecentSearch();
-			results.innerHTML = '';
+			resultsWrapper.innerHTML = '';
 			movieTitle = inputText;
 			currentPage = 1;
 			getMovies();
@@ -199,13 +199,13 @@ const handleFocus = () => {
 		searchInput.removeEventListener('focus', handleFocus);
 		if (loadRecentSearch.length > 5) {
 			const newRecentSearch = loadRecentSearch.filter(movie => movie.id !== 1);
-			searchContainer.classList.add('show');
+			header.classList.add('show');
 			newRecentSearch.forEach(movie => paintRecentSearch(movie));
 		} else {
-			searchContainer.classList.add('show');
+			header.classList.add('show');
 			loadRecentSearch.forEach(movie => paintRecentSearch(movie));
 		}
-		const recentItem = document.querySelectorAll('.recent-item');
+		const recentItem = document.querySelectorAll('.history');
 		for (let i = 0; i < recentItem.length; i++) {
 			recentItem[i].addEventListener('click', handleRecentClick);
 		}
@@ -213,22 +213,22 @@ const handleFocus = () => {
 };
 
 const clearRecentSearch = () => {
-	searchContainer.classList.remove('show');
+	header.classList.remove('show');
 	recentSearchTerms = [];
-	recentContainer.innerHTML = '';
+	searchHistoryWrapper.innerHTML = '';
 	searchInput.addEventListener('focus', handleFocus);
 };
 
 const handleExternalClick = e => {
 	const target = e.target;
-	if (!search.contains(target) && searchContainer.classList.contains('show')) {
+	if (!search.contains(target) && header.classList.contains('show')) {
 		clearRecentSearch();
-	} else if (body.classList == 'modal-open' && !modalContent.contains(target)) {
+	} else if (body.classList == 'open' && !modalContent.contains(target)) {
 		handleExitClick();
 	}
 };
 
 searchInput.addEventListener('focus', handleFocus);
 searchForm.addEventListener('submit', handleSubmitMovie);
-modalExitBtn.addEventListener('click', handleExitClick);
+modalBtn.addEventListener('click', handleExitClick);
 body.addEventListener('click', handleExternalClick);
