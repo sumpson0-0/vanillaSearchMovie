@@ -3,6 +3,7 @@ const header = document.querySelector('.header');
 const search = document.querySelector('.search');
 const searchForm = document.querySelector('.search-form');
 const searchInput = document.querySelector('.search-form__input');
+const searchClearBtn = document.querySelector('.search-form__btn-clear');
 const searchHistoryWrapper = document.querySelector('.search__history');
 const results = document.querySelector('.results');
 const resultsWrapper = document.querySelector('.results__wrapper--grid');
@@ -193,7 +194,7 @@ const handleRecentClick = e => {
 	}
 };
 
-const handleFocus = () => {
+const handleFocus = e => {
 	const loadRecentSearch = JSON.parse(localStorage.getItem('movie'));
 	if (Array.isArray(loadRecentSearch) && loadRecentSearch.length > 0) {
 		searchInput.removeEventListener('focus', handleFocus);
@@ -228,6 +229,11 @@ const handleExternalClick = e => {
 	}
 };
 
+const handleClearClick = () => {
+	searchInput.value = '';
+};
+
+searchClearBtn.addEventListener('click', handleClearClick);
 searchInput.addEventListener('focus', handleFocus);
 searchForm.addEventListener('submit', handleSubmitMovie);
 modalBtn.addEventListener('click', handleExitClick);
