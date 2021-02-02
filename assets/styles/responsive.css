@@ -19,11 +19,6 @@
 		grid-template-columns: repeat(5, 11rem);
 	}
 
-	.previewModal .previewModal__content {
-		width: 70rem;
-		height: 50rem;
-	}
-
 	.previewModal__info .previewModal__title {
 		font-size: 58px;
 	}
