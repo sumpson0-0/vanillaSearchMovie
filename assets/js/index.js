@@ -175,12 +175,16 @@ const paintSearchHistory = movie => {
 const handleHistoryClick = e => {
 	const target = e.target;
 	const currentTarget = e.currentTarget;
-	if (target.className == 'history__btn-delete') {
+	if (target.className == 'history__btn-delete' || target.className == 'fas fa-times') {
 		const removeRecentSearch = searchHistoryArr.filter(item => parseInt(currentTarget.id) !== item.id);
 		searchHistoryWrapper.removeChild(currentTarget);
 		searchHistoryArr = removeRecentSearch;
 		saveStorage();
-	} else if (currentTarget.contains(target)) {
+	} else if (
+		currentTarget.contains(target) &&
+		target.className !== 'history__btn-delete' &&
+		target.className !== 'fas fa-times'
+	) {
 		searchInput.value = currentTarget.children[1].innerText;
 		const inputText = searchInput.value;
 		searchInput.value = '';
@@ -228,11 +232,11 @@ const handleExternalClick = e => {
 		clearSearchHistory();
 	} else if (body.classList == 'open' && !modalContent.contains(target)) {
 		handleCloseClick();
+		e.preventDefault();
 	}
 };
 
 const handleClearClick = e => {
-	e.preventDefault();
 	searchInput.value = '';
 };
 
