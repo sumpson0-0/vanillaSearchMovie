@@ -7,7 +7,8 @@
 
 <br>
 
-## [Go to preview](https://www.notion.so/Preview-Vanilla-Search-Movie-1cf125e270624d65bf727197411b4ee4)
+<span>[Go to preview](https://www.notion.so/Preview-Vanilla-Search-Movie-1cf125e270624d65bf727197411b4ee4)</span> / 
+<span>[Go to website](http://vanilla-search-movies.s3-website.ap-northeast-2.amazonaws.com/)</span>
 
 ![Main Page Screenshot](/assets/images/screenshot.png)
 ![Main Page Screenshot](/assets/images/screenshot2.png)
